@@ -1,3 +1,5 @@
+import 'package:bmi_project/constants/bmi.dart';
+import 'package:bmi_project/constants/constants.dart';
 import 'package:bmi_project/widgets/shap_left.dart';
 import 'package:bmi_project/widgets/shap_right.dart';
 import 'package:flutter/material.dart';
@@ -12,10 +14,11 @@ class Home_Screen extends StatefulWidget {
 class _Home_ScreenState extends State<Home_Screen> {
   final wightcontroller = TextEditingController();
   final heightcontroller = TextEditingController();
-  double widthbad = 100;
-  double widthgood = 100;
+  double widthbad = 0;
+  double widthgood = 0;
   double Bmi = 0;
   String resultbmi = '';
+  var list;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -25,7 +28,7 @@ class _Home_ScreenState extends State<Home_Screen> {
         centerTitle: true,
         title: Text(
           'بی ام ای تو چنده؟',
-          style: TextStyle(color: Colors.black, fontSize: 22),
+          style: TextStyle(color: Background2, fontSize: 22),
         ),
       ),
       body: SafeArea(
@@ -50,8 +53,8 @@ class _Home_ScreenState extends State<Home_Screen> {
                         decoration: InputDecoration(
                             border: InputBorder.none,
                             hintText: 'وزن',
-                            hintStyle: TextStyle(
-                                color: Colors.orange.withOpacity(0.5))),
+                            hintStyle:
+                                TextStyle(color: Background1.withOpacity(0.7))),
                       ),
                     ),
                     Container(
@@ -68,8 +71,8 @@ class _Home_ScreenState extends State<Home_Screen> {
                         decoration: InputDecoration(
                             border: InputBorder.none,
                             hintText: 'قد',
-                            hintStyle: TextStyle(
-                                color: Colors.orange.withOpacity(0.5))),
+                            hintStyle:
+                                TextStyle(color: Background1.withOpacity(0.7))),
                       ),
                     ),
                   ],
@@ -77,22 +80,20 @@ class _Home_ScreenState extends State<Home_Screen> {
                 SizedBox(height: 40),
                 InkWell(
                   onTap: () {
-                    final wight = double.parse(wightcontroller.text);
-                    final heigh = double.parse(heightcontroller.text);
+                    var wight = double.parse(wightcontroller.text);
+                    final heigh = double.parse(heightcontroller.text) / 100;
                     setState(() {
-                      Bmi = wight / (heigh * heigh);
-                      if (Bmi > 25) {
-                        resultbmi = 'شما اضافه وزن دارید';
-                      } else if (Bmi >= 18.5 && Bmi <= 25) {
-                        resultbmi = 'شما نرمالید';
-                      } else {
-                        resultbmi = 'شما کم دارید';
-                      }
+                      list = BMI(wight, heigh);
+                      Bmi = list[0];
+                      resultbmi = list[1];
+                      widthbad = list[2];
+                      widthgood = list[3];
                     });
                   },
                   child: Text(
                     '!محاسبه کن',
                     style: TextStyle(
+                      color: Background2,
                       fontSize: 28,
                       fontWeight: FontWeight.bold,
                     ),
@@ -109,11 +110,15 @@ class _Home_ScreenState extends State<Home_Screen> {
                 SizedBox(height: 40),
                 Text(
                   resultbmi,
+                  textAlign: TextAlign.end,
                   style: TextStyle(
                     fontSize: 28,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
+                SizedBox(height: 80),
+                Shap_Left(width: widthgood),
+                Shap_Right(width: widthbad),
               ],
             ),
           ],
